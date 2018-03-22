@@ -1,0 +1,55 @@
+#heading{
+    text-align: center;
+    font-family:cursive;
+}
+
+.cell
+{
+    background-color: white;
+    margin: 1px;
+    font-size: 50em;
+    padding-top: 5px;
+    font-family: arial;     
+    font-weight: bold;
+    text-align: center;
+}
+
+.cell:hover{
+    cursor: pointer;
+}
+
+#board{
+    margin: 0 auto;
+    border-collapse:collapse;
+}
+
+#playerInfo{
+    padding: 10px;
+    position: absolute;
+    border: 1px solid black;
+}
+
+#mark{
+    text-align: right;
+}
+
+th{
+    border-bottom: 1px solid black;
+}
+tr {
+    border-color: black;
+    padding: 0px;
+    margin: 0px;
+}
+
+td{
+    border-color: black;
+    padding: 0px;
+}
+
+#slider{
+    margin: 0 auto;
+    width: 200px;
+    border: 2px solid black;
+    display: block;
+}
