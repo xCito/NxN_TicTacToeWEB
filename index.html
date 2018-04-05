@@ -13,33 +13,44 @@
 
         <section>
 
+
             <div>
                 <table id="playerInfo">
-                    <tr>
-                        <th>
-                            Player
-                        </th>
-                        <th>
-                            Mark
-                        </th>
-                    </tr>
-
                 </table>
             </div>
 
             <div>
-                <input type="range" min="1" max="15" step="1" value="1" id="slider" onchange="sliderChanged()"/>
+                <input type="range" min="1" max="15" step="1" value="2" id="slider" onchange="sliderChanged()"/>
 
                 <table id="board">
                 </table>
+
+                <button id="restart" onclick="restartGame()">
+                    Restart
+                </button>
             </div>
 
+            <div class="popup">
+                <h2> Welcome to NxN Tic-Tac-Toe</h2>
+                <label>How many players? </label>
+                <select>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                </select>
+                <br>
+                <label>Player Typ
+                    e</label>
+                <input type="radio" name="user" value="human"> Human
+                <input type="radio" name="user" value="ai"> PC
+                <input type="text" name="name" value="">
+                <input type="text" name="name" value="">
+            </div>
 
         </section>
 
-        <aside>
-
-        </aside>
 
         <script src="main.js"></script>
     </body>

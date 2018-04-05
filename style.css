@@ -1,21 +1,40 @@
+body{
+    background-image: url("darkBlueBackground.png");
+}
+
+
 #heading{
     text-align: center;
     font-family:cursive;
+    color: white;
 }
+
+/**************************************************/
+
 
 .cell
 {
-    background-color: white;
+    border: 0px solid;
+    /* background-color: #282828; */
+    border-color: white;
     margin: 1px;
     font-size: 50em;
-    padding-top: 5px;
-    font-family: arial;     
+    /* padding-top: 5px; */
+    font-family: arial;
     font-weight: bold;
     text-align: center;
+    color: white;
+
 }
 
 .cell:hover{
+    background-color: rgba(153, 191, 225, 20%);
     cursor: pointer;
+}
+
+.cellWin{
+    cursor: pointer;
+    background-color: rgba(244, 66, 66, 40%);
 }
 
 #board{
@@ -23,27 +42,91 @@
     border-collapse:collapse;
 }
 
-#playerInfo{
-    padding: 10px;
-    position: absolute;
-    border: 1px solid black;
+.boardRow
+{
+    border-bottom: 4px solid white;
 }
+/**************************************************/
+
+#playerInfo{
+    padding: 0px;
+    position: absolute;
+    border: 3px dashed white;
+    border-collapse: collapse;
+}
+
+.playerDataTurn
+{
+    padding: 0px;
+    margin: 0px;
+    background-color: rgba(255, 66, 33, 30%);
+}
+
+.playerData
+{
+    margin: 0px;
+    padding: 10px;
+    font-size: 20px;
+    text-align: right;
+    color: white;
+}
+.playerDataHeader
+{
+    padding: 10px;
+    text-align: left;
+    font-size: 30px;
+    color: white;
+}
+
+/**************************************************/
+
+#restart
+{
+    position: absolute;
+    top: 200px;
+    right: 200px;
+    height: 50px;
+    width: 100px;
+    border-radius: 10px;
+    color: blue;
+    font-weight: bold;
+    background-color: pink;
+}
+
+
+#restart:hover
+{
+    opacity: 0.5;
+}
+
+/**************************************************/
+.popup{
+    display: none;
+    background-color: rgba(255,255,255,20%);
+    position: absolute;
+    left: 500px;
+    top: 30%;
+    margin: 0px auto;
+}
+
+/**************************************************/
 
 #mark{
     text-align: right;
 }
 
+
 th{
-    border-bottom: 1px solid black;
+    color: white;
 }
 tr {
-    border-color: black;
+    border-color: white;
     padding: 0px;
     margin: 0px;
 }
 
 td{
-    border-color: black;
+    border-color: white;
     padding: 0px;
 }
 

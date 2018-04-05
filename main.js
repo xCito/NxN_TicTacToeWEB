@@ -1,5 +1,184 @@
 console.log("Welcome to the NxN TicTacToe Game");
 
+////////////////////////////////////////////////////////////////////////////////
+
+class BoardChecker
+{
+    constructor( win )
+    {
+        this.winStreak = win;
+    }
+
+    check( board , x , y )
+    {
+        let winningSpots = [];
+        var mark = board[y][x];
+
+        var vertResult = this.checkVertical(board , x , y, mark);
+        var horiResult = this.checkHorizontal(board , x , y, mark);
+        var dia1Result = this.checkDiagonalTLBR(board , x , y, mark);
+        var dia2Result = this.checkDiagonalTRBL(board , x , y, mark);
+
+        var vertWin = vertResult.pop();
+        var horiWin = horiResult.pop();
+        var dia1Win = dia1Result.pop();
+        var dia2Win = dia2Result.pop();
+
+        if(vertWin)
+            winningSpots = winningSpots.concat(vertResult);
+        if(horiWin)
+            winningSpots = winningSpots.concat(horiResult);
+        if(dia1Win)
+            winningSpots = winningSpots.concat(dia1Result);
+        if(dia2Win)
+            winningSpots = winningSpots.concat(dia2Result);
+
+        console.log(winningSpots);
+
+        return winningSpots;
+    }
+
+    checkVertical(board , x , y, mark)
+    {
+        var winRow = [];
+        var shiftX = x;
+
+        //check left
+        while(board[y][shiftX] == mark){
+            winRow.push( [y,shiftX] );
+            shiftX--;
+
+            if(shiftX < 0)                  // stay in bounds
+                break;
+        }
+
+        shiftX = x+1;
+        if(shiftX < board.length)          // stay in bounds
+        {
+            //check right
+            while(board[y][shiftX] == mark){
+                winRow.push( [y,shiftX] );
+                shiftX++;
+
+                if(shiftX >= board.length)      // stay in bounds
+                    break;
+            }
+        }
+
+        if(winRow.length >= this.winStreak)
+            winRow.push(true);
+        else
+            winRow.push(false);
+
+        return winRow;
+    }
+    checkHorizontal(board , x , y, mark)
+    {
+        var winRow = [];
+        var shiftY = y;
+        //check up
+        while(board[shiftY][x] == mark){
+            winRow.push( [shiftY,x] );
+            shiftY--;
+
+            if(shiftY < 0)              // stay in bounds
+                break;
+        }
+
+        shiftY = y+1;
+        if(shiftY < board.length)          // stay in bounds
+        {
+            //check down
+            while(board[shiftY][x] == mark){
+                winRow.push( [shiftY,x] );
+                shiftY++;
+
+                if(shiftY >= board.length)  // stay in bounds
+                    break;
+            }
+        }
+        if(winRow.length >= this.winStreak)
+            winRow.push(true);
+        else
+            winRow.push(false);
+
+        return winRow;
+    }
+    checkDiagonalTLBR(board , x , y, mark)
+    {
+        var winRow = [];
+        var shiftX = x;
+        var shiftY = y;
+        //check top left
+        while(board[shiftY][shiftX] == mark){
+            winRow.push( [shiftY,shiftX] );
+            shiftY--;
+            shiftX--;
+            if(shiftX < 0 || shiftY < 0)              // stay in bounds
+                break;
+        }
+
+        shiftX = x+1;
+        shiftY = y+1;
+        if(shiftX < board.length && shiftY < board.length)              // stay in bounds
+        {
+            //check bottom right
+            while(board[shiftY][shiftX] == mark){
+                winRow.push( [shiftY,shiftX] );
+                shiftY++;
+                shiftX++;
+                if(shiftX >= board.length || shiftY >= board.length)              // stay in bounds
+                    break;
+            }
+        }
+        if(winRow.length >= this.winStreak)
+            winRow.push(true);
+        else
+            winRow.push(false);
+
+        return winRow;
+
+    }
+    checkDiagonalTRBL(board , x , y, mark)
+    {
+        var winRow = [];
+        var shiftX = x;
+        var shiftY = y;
+        //check bottom left
+        while(board[shiftY][shiftX] == mark){
+            winRow.push( [shiftY,shiftX] );
+            shiftY++;
+            shiftX--;
+            if(shiftX < 0 || shiftY >= board.length)            // stay in bounds
+                break;
+        }
+
+        shiftX = x+1;
+        shiftY = y-1;
+        if(shiftX < board.length && shiftY >= 0)                // stay in bounds
+        {
+            //check top right
+            while(board[shiftY][shiftX] == mark)
+            {
+                winRow.push( [shiftY,shiftX] );
+                shiftY--;
+                shiftX++;
+                if(shiftX >= board.length || shiftY < 0)            // stay in bounds
+                    break;
+            }
+        }
+
+        if(winRow.length >= this.winStreak)
+            winRow.push(true);
+        else
+            winRow.push(false);
+
+        return winRow;
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
 class Board
 {
     constructor(size, tableElem)
@@ -9,6 +188,8 @@ class Board
 
         // gameboard data 2D array
         this.grid = [];
+        this.checker = new BoardChecker(3);
+        this.lastMark = [];
 
         // magic numbers
         this.cellSize = 150;
@@ -59,22 +240,21 @@ class Board
     calculateCellSize()
     {
         this.cellSize = 450/this.size;
-        this.boardW = 1/this.size;
+        this.boardW = 1/(this.size+1);
     }
 
-    createSpace( name )
+    createSpace( name, cell )
     {
         var td = document.createElement("TD");
         var cell = document.createElement("DIV");
-        cell.setAttribute("class", "cell");
         cell.setAttribute("id", name);
         cell.addEventListener("click", markCell);
-        cell.style.width = (this.cellSize+5) + "px";
+        cell.style.width = (this.cellSize+1) + "px";
         cell.style.height = this.cellSize + "px";
         cell.style.fontSize = (385/this.size)-(this.size/7) + "px"; // magic formula
         cell.style.margin = this.boardW + "px";
         cell.innerText = " ";
-
+        td.setAttribute("class", "cell");
         td.appendChild(cell);
 
         return td;
@@ -92,12 +272,12 @@ class Board
             {
                 var cell = this.createSpace( count++ );
                 gridRow.push(" ");
-                cell.style.border = "0px solid " + this.lineColor;
+                //cell.style.border = "0px solid " + this.lineColor;
                 cell.style.borderWidth = this.styleCellBorder(i,j);
 
                 // draws horizontal lines (except for last for last row)
                 if( i != (this.size-1))
-                    row.style.borderBottom = "thick solid " + this.lineColor;
+                    row.setAttribute("class", "boardRow");
 
                 row.appendChild(cell);
 
@@ -113,6 +293,32 @@ class Board
         var x = parseInt(cellNum%this.size);
         var y = parseInt(cellNum/this.size);
         this.grid[y][x] = mark;
+
+        this.lastMark.push(x);
+        this.lastMark.push(y);
+    }
+
+    checkForWin()
+    {
+        var winningSlots = this.checker.check(this.grid, this.lastMark[0], this.lastMark[1]);
+
+        if(winningSlots.length > 0)
+            console.log("somebody won");
+
+        if(winningSlots.length > 0)
+        {
+            for(var i=0; i<winningSlots.length; i++)
+            {
+
+                let cellNum = this.grid.length * winningSlots[i][0];
+                cellNum += winningSlots[i][1];
+
+                var cell = document.getElementById(cellNum.toString());
+                cell.setAttribute("class", "cellWin");
+            }
+        }
+
+        this.lastMark = [];
     }
 
     isSpaceOpen(cellNum)
@@ -141,6 +347,8 @@ class Player {
 
     getMark() {   return this.mark;  }
     setMark(m){   this.mark = m;     }
+    getName() {   return this.name;  }
+    setName(n){   this.name = n;     }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -166,44 +374,222 @@ class Robot extends Player {
 
 ////////////////////////////////////////////////////////////////////////////////
 
+class LeaderBoard
+{
+    constructor(table)
+    {
+        this.rows = [];
+        this.leaderBoard = table;
+        this.turn = 0;
+        this.clearBoard();
+    }
 
-var pageTitle = document.getElementById('heading');
-var board  = document.getElementById('board');
+    clearBoard()
+    {
+        while (this.leaderBoard.firstChild){
+            this.leaderBoard.removeChild(this.leaderBoard.firstChild);
+        }
+        this.rows = [];
+        this.leaderBoard.appendChild( this.createHeader() );
+        this.turn = 0;
+    }
+
+    createHeader()
+    {
+        var playerTitle = document.createElement("TH");
+        var markTitle = document.createElement("TH");
+        var row = document.createElement("TR");
+        playerTitle.innerText = "Player";
+        markTitle.innerText = "Mark";
+        playerTitle.setAttribute("class", "playerDataHeader");
+        markTitle.setAttribute("class", "playerDataHeader");
+
+        row.appendChild(playerTitle);
+        row.appendChild(markTitle);
+        return row;
+    }
+
+    createRow( player )
+    {
+        var row = document.createElement("TR");
+        var plr = document.createElement("TD");
+        var mrk = document.createElement("TD");
+        plr.setAttribute("class", "playerData");
+        mrk.setAttribute("class", "playerData");
+
+        plr.innerText = player.getName();
+        mrk.innerText = player.getMark();
+
+        row.appendChild(plr);
+        row.appendChild(mrk);
+
+        return row;
+    }
+
+    setTurn( t )
+    {
+        this.rows[this.turn].setAttribute("class", "");
+        this.turn = t;
+        this.rows[this.turn].setAttribute("class","playerDataTurn");
+    }
+
+    addPlayer( player )
+    {
+        var r = this.createRow( player );
+        this.rows.push( r );
+        this.leaderBoard.appendChild( r );
+    }
+
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+class Game
+{
+
+    constructor( n )
+    {
+        this.numberOfPlayers = n;
+        this.players = [];
+        this.pageTitle;
+        this.TTTBoard;
+        this.leaderBoard;
+        this.playerTurn = 0;
+    }
+
+    initiateGame( )
+    {
+        this.pageTitle = document.getElementById('heading');
+        var gameTable = document.getElementById('board');
+        var playerTable = document.getElementById('playerInfo');
+
+        var size = this.getBoardSize();
+        this.pageTitle.innerText = size +"x"+size+" Tic-Tac-Toe: " + this.numberOfPlayers + " Players";
+
+        this.TTTBoard = new Board(size, gameTable);
+        this.TTTBoard.generateBoard();
+
+        this.leaderBoard = new LeaderBoard(playerTable);
+    }
+
+    newGame( num )
+    {
+        this.numberOfPlayers = num;
+        var size = this.getBoardSize();
+        this.pageTitle.innerText = size +"x"+size+" Tic-Tac-Toe: " + this.numberOfPlayers + " Players";
+        this.TTTBoard.setSize( size );
+        this.TTTBoard.generateBoard();
+        this.players = [];
+        this.leaderBoard.clearBoard();      // ---------------------------------------------
+
+    }
+
+    restartGame()
+    {
+        this.TTTBoard.generateBoard();
+        this.setRandomTurn();
+    }
+
+    addPlayer ( name, mark )
+    {
+        var p = new Player( name, mark );
+        this.leaderBoard.addPlayer( p );        // ---------------------------------------------
+        this.players.push(p);
+    }
+
+    getBoardSize()
+    {
+        return (2 * this.numberOfPlayers) - 1;
+    }
+
+    markSpace(cellNum)
+    {
+        //var x = parseInt(cellNum%this.getBoardSize());
+        //var y = parseInt(cellNum/this.getBoardSize());
+        var m = this.players[this.playerTurn].getMark();
+        //this.TTTBoard.grid[y][x] = m;
+        this.TTTBoard.markSpace(cellNum, m);
+        this.nextTurn();
+        return m;
+    }
+    checkForWin()
+    {
+        this.TTTBoard.checkForWin();
+    }
+
+    nextTurn()
+    {
+        this.playerTurn++;
+
+        if(this.playerTurn >= this.players.length)
+            this.playerTurn = 0;
+        this.leaderBoard.setTurn( this.playerTurn );
+    }
+
+    setRandomTurn()
+    {
+        var t = Math.floor( Math.random()*this.numberOfPlayers);
+        this.playerTurn = t;
+        this.leaderBoard.setTurn(t);
+    }
+
+    isSpaceOpen(cellNum)
+    {
+        var x = parseInt(cellNum%this.getBoardSize());
+        var y = parseInt(cellNum/this.getBoardSize());
+        if(this.TTTBoard.grid[y][x] == " ")
+            return true;
+        return false;
+    }
+
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+
 var slider = document.getElementById('slider');
-var playerTable = document.getElementById('playerInfo');
-var numPlayers = 2;
-var boardSize = Math.pow(2,numPlayers) - 1;
+var numPlayers = slider.value;
 var mark = ["X", "O", "Y", "Z", "A", "B", "G", "T", "H", "V", "W"];
 var count = 0;
 
-var TTTBoard = new Board(boardSize, board);
+let game = new Game( numPlayers );
+game.initiateGame();
+
 for(var i=0; i<numPlayers; i++)
-    playerTable.innerHTML += "<tr><td>Player " + (i+1)+ "</td><td>" + mark[i%numPlayers]+ "</td></tr>"
-TTTBoard.generateBoard();
+    game.addPlayer( "Player "+i, mark[i] );
+game.setRandomTurn();
+
+
+
 
 function sliderChanged()
 {
     numPlayers = slider.value;
-    boardSize = (2*numPlayers) - 1;
-    pageTitle.innerText = boardSize+"x"+boardSize+" Tic-Tac-Toe: " + numPlayers + " Players";
-    playerTable.innerHTML = "<tr><th>Player</th><th>Mark</th></tr>";
+    game.newGame( slider.value );
+
     for(var i=0; i<numPlayers; i++)
-        playerTable.innerHTML += "<tr><td>Player " + (i+1)+ "</td><td id=\"mark\">" + mark[i%numPlayers]+ "</td></tr>"
-    TTTBoard.setSize(boardSize);
-    TTTBoard.generateBoard();
+        game.addPlayer( "Player "+i, mark[i] );
+    game.setRandomTurn();
     count = 0;
     console.log("slider changed");
 }
+
+
+
 
 function markCell(evt)
 {
     var cellNum = evt.target.id;
 
-    if(TTTBoard.isSpaceOpen(cellNum))
+    if(game.isSpaceOpen(cellNum))
     {
-        evt.target.innerText = mark[count%numPlayers];
-        TTTBoard.markSpace(cellNum, mark[count%numPlayers]);
+        evt.target.innerText = game.markSpace(cellNum);
         count++;
     }
-    console.log("click");
+    game.checkForWin();
+}
+
+function restartGame()
+{
+    game.restartGame();
 }
