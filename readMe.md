@@ -1,11 +1,6 @@
 
 # NxN TicTacToe
 
-===========================
-
-###Depending on the number of players in the game.
-# NxN TicTacToe
-
 
   A normal Tic Tac Toe game made with HTML, CSS, and Javascript, but with a twist.   
   Depending on the number of players in the game, the TicTacToe board will grow accordingly.
@@ -42,24 +37,3 @@
 	+ Allow player to set char to play with
 	+ Allow player to set name
 	+ Maybe allow to set color
-###The TicTacToe board will grow accordingly:
-
-    (2*P)-1 = size
-
-numPlayers | size | _ in a rows
- 2         | 3    |     3
- 3         | 5    |     3
- 4         | 7    |     3
- 5         | 9    |     4
- 6         | 11   |     4
- 7         | 13   |     4
-
----------------------------------------
-
-#Still in Progress
-
-Future works:   
-    Make responsive
-    Stop game after player win  
-    Implement a modal screen
-    AI players
