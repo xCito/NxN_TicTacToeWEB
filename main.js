@@ -194,7 +194,8 @@ class Board
         // magic numbers
         this.cellSize = 150;
         this.borderW = 5;
-        this.cellSizeMagicNum = 450;
+        // this.cellSizeMagicNum = 450;
+        this.cellSizeMagicNum = 500;
         this.fontSizeMagicNum = 385;
         this.lineColor = "black";
     }
@@ -549,7 +550,7 @@ class Game
 
 var slider = document.getElementById('slider');
 var numPlayers = slider.value;
-var mark = ["X", "O", "Y", "Z", "A", "B", "G", "T", "H", "V", "W"];
+var mark = ["X", "O", "Y", "Z", "A", "B", "G", "T", "H", "V", "W", "#","$","&","M"];
 var count = 0;
 
 let game = new Game( numPlayers );
