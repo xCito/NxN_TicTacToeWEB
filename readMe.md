@@ -21,7 +21,7 @@
 
 ---------------------------------------
 
-### Still in Progress
+### Still in Progress...
 
 ##### Future works:  
 
